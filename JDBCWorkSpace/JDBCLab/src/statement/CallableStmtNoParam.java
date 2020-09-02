@@ -1,0 +1,31 @@
+package statement;
+
+import java.sql.*;
+
+public class CallableStmtNoParam {
+
+	public static void main(String[] args) {
+		try (Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xepdb1", "scott",
+				"tiger");
+		) {
+			CallableStatement cstmt = connection.prepareCall("{call queryemployee }");
+			cstmt.execute();
+			boolean moreResult = cstmt.getMoreResults();
+			if (moreResult) {
+				ResultSet rs = cstmt.getResultSet();
+				while (rs.next()) {
+					System.out.println(rs.getString("empno"));
+					
+				}
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+
+	}
+
+}

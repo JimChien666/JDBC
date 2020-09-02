@@ -1,0 +1,36 @@
+package statement;
+
+import java.math.BigDecimal;
+import java.sql.*;
+
+public class PreparedStmtUpdateLab {
+
+	public static void main(String[] args) {
+		try (Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xepdb1", "scott",
+				"tiger");
+
+		) {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from emp left join dept on emp.deptno=dept.deptno");
+			
+			PreparedStatement pstmt = connection.prepareStatement("update emp set commission = ? where empno = ?");
+			while (rs.next()) {
+				if (rs.getString("location").equals("台中")) {
+					BigDecimal commission = rs.getBigDecimal("commission");
+					BigDecimal newcommission = commission.add(new BigDecimal(100));
+					int empno = rs.getInt("empno");
+					pstmt.setBigDecimal(1, newcommission);
+					pstmt.setInt(2, empno);
+					pstmt.executeUpdate();
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+
+	}
+
+}

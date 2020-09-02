@@ -1,0 +1,16 @@
+package orm;
+
+import java.util.List;
+
+public class EmployeeJDBCDAO {
+	//取得所有的emp tavle的資料，轉換成Employee物件，回傳list因為會有多筆
+	public List<Employee> listEmployees() {
+		return null;
+	}
+	
+	//更新Employee物件回資料庫
+	public void updateEmployee(Employee emp) {
+		
+	}
+	
+}

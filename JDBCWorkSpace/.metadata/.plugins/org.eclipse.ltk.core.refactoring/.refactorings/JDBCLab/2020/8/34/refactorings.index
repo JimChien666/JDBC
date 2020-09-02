@@ -1,0 +1,12 @@
+1597891904863	Extract local variable 'createStatement'
+1597892066737	Extract local variable 'rs'
+1597901945635	Copy compilation unit
+1597902969584	Copy compilation unit
+1597903083237	Rename type 'HelloJDBC'
+1597904888834	Copy compilation unit
+1597909519498	Extract local variable 'pstmt'
+1597909822796	Extract local variable 'rs'
+1597910885648	Extract local variable 'pstmt'
+1597912104873	Extract local variable 'pstmt'
+1597995474191	Delete element
+1597999476286	Delete element

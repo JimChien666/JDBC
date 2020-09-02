@@ -1,0 +1,67 @@
+package batchupdate;
+
+import java.math.BigDecimal;
+import java.sql.*;
+
+public class PreparedStmtUpdateLab {
+
+	public static void main(String[] args) {
+		try (Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xepdb1", "scott",
+				"tiger");
+		) {
+			try {
+				
+				connection.setAutoCommit(false);
+				
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("select * from emp left join dept on emp.deptno=dept.deptno");
+				BigDecimal oneHundred = new BigDecimal(100);
+				PreparedStatement pstmt = connection.prepareStatement("update emp set commission = ? where empno = ?");
+				int count = 0;
+				while (rs.next()) {
+					
+					if (rs.getString("location").equals("台北")) {
+						BigDecimal commission = rs.getBigDecimal("commission");
+//					BigDecimal newcommission = commission.add(oneHundred);
+						commission = commission.add(oneHundred);
+						int empno = rs.getInt("empno");
+						pstmt.setBigDecimal(1, commission);
+						pstmt.setInt(2, empno);
+						pstmt.addBatch();//加入批次
+						
+						//50筆批次送
+						
+						pstmt.clearParameters();
+//					int updated = pstmt.executeUpdate();
+//					if (updated > 0) {
+//						System.out.println("OK");
+//					}
+						count++;
+						if (count % 50 == 0) {
+							
+							pstmt.executeBatch();
+							pstmt.clearBatch();
+							count = 0;
+							
+						}
+					}
+					
+				}
+				
+				int[] results = pstmt.executeBatch();
+				pstmt.clearBatch();
+				connection.commit();
+			} catch (Exception e) {
+				connection.rollback();
+				e.printStackTrace();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+
+	}
+
+}

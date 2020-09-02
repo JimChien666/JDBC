@@ -1,0 +1,38 @@
+package batchupdate;
+
+import java.sql.*;
+
+public class BatchUpdateLab {
+
+	public static void main(String[] args) {
+		try (Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xepdb1", "scott",
+				"tiger");
+
+		) {
+			Statement stmt = connection.createStatement();
+			stmt.addBatch("update emp set commission = 100 where deptno = 10");
+			stmt.addBatch("update emp set salary = 100 where deptno = 20");
+			stmt.addBatch("select * from emp");
+			stmt.addBatch("update emp set commission = 100 where deptno = 10");
+			stmt.addBatch("update emp set salary = 100 where deptno = 20");
+			int[] updated = stmt.executeBatch();
+			for(int i = 0; i<updated.length;i++) {
+				System.out.println("第" + (i+1) + "sql，結果=" + updated[i] + "筆數受到影響");
+			}
+			
+			stmt.clearBatch();
+			
+		} catch (BatchUpdateException bue) {
+			int[] results = bue.getUpdateCounts();
+			for(int i = 0; i<results.length;i++) {
+				System.out.println("第" + (i+1) + "sql，結果=" + results[i] + "筆數受到影響");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+
+	}
+
+}
